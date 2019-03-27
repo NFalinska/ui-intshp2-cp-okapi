@@ -15,6 +15,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   @Input() ind;
   @Input() color;
   @Input() pass;
+  rooms = [];
   private socket = io.connect('http://localhost:3000');
   // @Input() somebodyJoined;
 
@@ -47,6 +48,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
  sendMes(roomID) {
+   this.rooms = JSON.parse(localStorage.getItem('rooms'));
+//    if (this.rooms.length > 1) {
+//       this.chatService.sendMessage(roomID);
+//  }
    this.chatService.sendMessage(roomID);
  }
 

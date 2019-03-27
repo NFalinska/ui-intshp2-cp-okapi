@@ -41,6 +41,7 @@ export class ChatControllerComponent
   ngAfterViewChecked() {}
 
   ngOnInit() {
+    this.checkLocal();
     if (!localStorage.getItem('chats')) {
       localStorage.setItem('chats', '[]');
     } else {
@@ -105,7 +106,16 @@ export class ChatControllerComponent
       this.chatService.joinRoom(userName, password);
       this.chatService.addUser(userName);
       this.chatService.updateSelectedArr(this.selectedArr);
+      localStorage.setItem('rooms', JSON.stringify(this.selectedArr));
       console.log(this.selectedArr, 'join');
+  }
+
+  checkLocal() {
+    if (!localStorage.getItem('rooms')) {
+      localStorage.setItem('rooms', '[]');
+    } else {
+      this.selectedArr = JSON.parse(localStorage.getItem('rooms'));
+    }
   }
 
   changeChatTitle() {
