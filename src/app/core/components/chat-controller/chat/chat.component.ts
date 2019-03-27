@@ -69,4 +69,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
   editChatName(value) {
     this.chat.chatName = value;
   }
+
+    changePosition(event) {
+    const el = document.querySelectorAll('.main-chat-view');
+       for (let i = 0; i < el.length; i ++) {
+       el[i].classList.remove('target');
+       el[i].classList.add('change-position');
+       event.currentTarget.classList.add('target');
+    }
+  }
 }
