@@ -208,3 +208,16 @@
   border-radius: 20px;
   font-size: 14px;
 }
+
+.change-position {
+  z-index: 2;
+}
+
+.target {
+  z-index: 3;
+}
+
+.messages-block {
+  height: 300px;
+  overflow: scroll;
+}

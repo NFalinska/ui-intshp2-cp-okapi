@@ -1,4 +1,4 @@
-<div [id]='chat.chatId' class="main-chat-view" [ngStyle]="{'transform': 'translate(' + -ind*15 + 'px, ' + -ind*15 + 'px)'}" (click) = "changePosition($event)"">
+<div [id]='chat.chatId' class="main-chat-view" [ngStyle]="{'transform': 'translate(' + -ind*15 + 'px, ' + -ind*15 + 'px)'}" (click) = "changePosition($event)">
 <div (click)="minimizeToggle()" class="chat-header default-icon" *ngIf="isMinimized">
     <h5>{{chat.chatName}}: 14</h5>
 </div>
