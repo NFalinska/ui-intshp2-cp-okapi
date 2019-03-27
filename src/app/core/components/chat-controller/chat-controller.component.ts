@@ -8,6 +8,7 @@ import {
   AfterViewChecked,
 } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-chat-controller',
@@ -17,6 +18,7 @@ import { ChatService } from '../../services/chat.service';
 export class ChatControllerComponent
   implements OnDestroy, OnInit, OnChanges, AfterViewChecked {
   @ViewChild('chat') chat;
+  joinForm: FormGroup;
   isMinimized = false;
   isChatController = false;
   isJoinChat = false;
@@ -24,7 +26,11 @@ export class ChatControllerComponent
   arr = [];
   selectedArr = [];
   isOpen = true;
+  checkName = true;
+  checkTitle = true;
   public password;
+  // private checkNameRegExp = /^[a-zа-я]+$/i;
+  private checkNameRegExp = /^[A-Za-z]+[\w\-\_\.]*$/;
   // public somebodyJoined;
 
   chats = [
@@ -41,6 +47,7 @@ export class ChatControllerComponent
   ngAfterViewChecked() {}
 
   ngOnInit() {
+    // this.checkTitleName();
     this.checkLocal();
     if (!localStorage.getItem('chats')) {
       localStorage.setItem('chats', '[]');
@@ -50,7 +57,9 @@ export class ChatControllerComponent
     // this.chatService.addUser();
   this.chatService.updateListArr(this.arr);
   this.chatService.updateChat();
-
+  this.joinForm = new FormGroup({
+    'chat': new FormControl(null, [Validators.required, Validators.pattern(this.checkNameRegExp)])
+  });
 
       // this.chatService.sendMessage()
 
@@ -76,13 +85,21 @@ export class ChatControllerComponent
   ngOnChanges() {}
 
   openNewChat(chatName, userName, chatId) {
-    const messageColor = this.chatService.generateRandomColor();
-    this.password = this.chatService.generateRandomPassword(8);
-    // console.log(pass)
-    this.arr.push({ chatName, userName, chatId});
-    this.selectedArr.push({ chatName, userName, chatId});
-    console.log(this.selectedArr, 'selected start');
-    this.chatService.addChat(chatName, userName, chatId, this.password, messageColor);
+    if (!this.selectedArr.find(el => el.userName === userName)) {
+      const messageColor = this.chatService.generateRandomColor();
+      this.password = this.chatService.generateRandomPassword(8);
+      // console.log(pass)
+      this.arr.push({ chatName, userName, chatId});
+      this.selectedArr.push({ chatName, userName, chatId});
+      console.log(this.selectedArr, 'selected start');
+      this.chatService.addChat(chatName, userName, chatId, this.password, messageColor);
+    } else {
+      this.checkName = false;
+    }
+  }
+
+  checkTitleName() {
+      return this.joinForm.get('chat-title').valid;
   }
 
   minimizeToggle() {

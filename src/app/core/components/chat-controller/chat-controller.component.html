@@ -52,14 +52,16 @@
     *ngIf="!isChatController; else chatController"
     class="chat-controller-content"
   >
-    <form *ngIf="!isJoinChat" action="/action_page.php">
+    <form *ngIf="!isJoinChat" [formGroup]="joinForm" (ngSubmit)="openNewChat(chatName.value, userName.value, chatName.value)" action="/action_page.php">
       <label>Chat Title:</label>
       <input
         #chatName
+        formControlName="chat"
         type="text"
         name="title"
         placeholder="Enter chat title"
       />
+      <span class="check-title" *ngIf="!checkTitle">Title can't start with numbers</span>
       <label>Your name in the chat:</label>
       <input
         #userName
@@ -67,10 +69,11 @@
         name="name"
         placeholder="Enter your name in chat"
       />
+      <span class="check-name">This name already exists</span>
       <input
-        (click)="openNewChat(chatName.value, userName.value, chatName.value)"
         class="btn btn-enter-chat"
         type="submit"
+        (click)="(joinForm.valid)"
         value="Start"
       />
     </form>
