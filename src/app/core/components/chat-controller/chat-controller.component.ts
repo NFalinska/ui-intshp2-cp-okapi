@@ -19,7 +19,7 @@ import { element } from '@angular/core/src/render3';
   styleUrls: ['./chat-controller.component.scss'],
 })
 export class ChatControllerComponent
-  implements OnDestroy, OnInit, OnChanges, AfterViewChecked, AfterViewInit{
+  implements OnDestroy, OnInit, OnChanges, AfterViewChecked, AfterViewInit {
   @ViewChild('chat') chat;
   joinForm: FormGroup;
   isMinimized = false;
