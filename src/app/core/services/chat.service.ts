@@ -11,6 +11,7 @@ export class ChatService {
   public password;
   public currentUserName = '';
   public classNameCopy = '';
+  messagesArray = [];
 
   sendMessage(roomId, technicalMessage?) {
     let message;
@@ -23,9 +24,12 @@ export class ChatService {
     } else {
       message = technicalMessage;
       this.socket.emit('sendchat', message, roomId);
-
     }
     console.log('sendchat message', message, roomId);
+    console.log(message);
+    this.messagesArray.push(message);
+    console.log(this.messagesArray, 'array');
+    localStorage.setItem('messages', JSON.stringify(this.messagesArray));
   }
 
     joinRoom(userName, password) {
@@ -46,7 +50,7 @@ export class ChatService {
         const div = document.createElement('div');
         div.style.color = messageColor;
         div.className = 'message message-' + userName;
-        // setTimeout(function() { div.style.color = 'grey'; },  3000);
+        setTimeout(function() { div.style.color = 'grey'; },  3000);
         const date = new Date();
         const time = date.toLocaleString('en-GB', { timeZone: 'Europe/Kiev' });
         div.innerHTML = userName + ' : ' + data + ' : ' + time;

@@ -6,9 +6,12 @@ import {
   OnInit,
   OnChanges,
   AfterViewChecked,
+  AfterContentInit,
+  AfterViewInit,
 } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { element } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-chat-controller',
@@ -16,7 +19,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./chat-controller.component.scss'],
 })
 export class ChatControllerComponent
-  implements OnDestroy, OnInit, OnChanges, AfterViewChecked {
+  implements OnDestroy, OnInit, OnChanges, AfterViewChecked, AfterViewInit{
   @ViewChild('chat') chat;
   joinForm: FormGroup;
   isMinimized = false;
@@ -29,7 +32,6 @@ export class ChatControllerComponent
   checkName = true;
   checkTitle = true;
   public password;
-  // private checkNameRegExp = /^[a-zа-я]+$/i;
   private checkNameRegExp = /^[A-Za-z]+[\w\-\_\.]*$/;
   // public somebodyJoined;
 
@@ -46,8 +48,13 @@ export class ChatControllerComponent
 
   ngAfterViewChecked() {}
 
+  ngAfterViewInit(): void {
+    if (this.joinForm) {
+      console.log(this.joinForm.value, 'after');
+    }
+  }
+
   ngOnInit() {
-    // this.checkTitleName();
     this.checkLocal();
     if (!localStorage.getItem('chats')) {
       localStorage.setItem('chats', '[]');
@@ -55,11 +62,11 @@ export class ChatControllerComponent
       this.arr = JSON.parse(localStorage.getItem('chats'));
     }
     // this.chatService.addUser();
-  this.chatService.updateListArr(this.arr);
-  this.chatService.updateChat();
-  this.joinForm = new FormGroup({
-    'chat': new FormControl(null, [Validators.required, Validators.pattern(this.checkNameRegExp)])
-  });
+    this.chatService.updateListArr(this.arr);
+    this.chatService.updateChat();
+    this.joinForm = new FormGroup({
+      'chat': new FormControl(null, [Validators.required, Validators.pattern(this.checkNameRegExp)])
+    });
 
       // this.chatService.sendMessage()
 
@@ -85,21 +92,29 @@ export class ChatControllerComponent
   ngOnChanges() {}
 
   openNewChat(chatName, userName, chatId) {
-    if (!this.selectedArr.find(el => el.userName === userName)) {
-      const messageColor = this.chatService.generateRandomColor();
-      this.password = this.chatService.generateRandomPassword(8);
-      // console.log(pass)
-      this.arr.push({ chatName, userName, chatId});
-      this.selectedArr.push({ chatName, userName, chatId});
-      console.log(this.selectedArr, 'selected start');
-      this.chatService.addChat(chatName, userName, chatId, this.password, messageColor);
+    if (this.selectedArr.find(el => el.chatName === chatName)) {
+      if (!this.selectedArr.find(el => el.userName === userName)) {
+        this.createUser(chatName, userName, chatId);
+      } else {
+        this.checkName = false;
+      }
     } else {
-      this.checkName = false;
+        this.createUser(chatName, userName, chatId);
     }
   }
 
+  createUser(chatName, userName, chatId) {
+    const messageColor = this.chatService.generateRandomColor();
+    this.password = this.chatService.generateRandomPassword(8);
+    this.arr.push({ chatName, userName, chatId});
+    this.selectedArr.push({ chatName, userName, chatId});
+    this.chatService.addChat(chatName, userName, chatId, this.password, messageColor);
+  }
+
   checkTitleName() {
-      return this.joinForm.get('chat-title').valid;
+    if (this.joinForm) {
+        return this.joinForm.get('chat').valid;
+    }
   }
 
   minimizeToggle() {
